@@ -23,8 +23,8 @@ available_format = [
 
 class webservices_generic(models.Model):
     _name = "webservices.server"
-    
-    
+
+
     @api.multi
     def action_test_connection(self):
         self.ensure_one()
@@ -38,7 +38,6 @@ class webservices_generic(models.Model):
         _logger.warning(
                     'Expecting %s response format...' % self.response_format)
         if rr['status'] == 200:
-            print rr['data']
             raise Warning(_('Result: %s!' % json.dumps(rr['data'])))
         else:
             raise Warning(_('Result: %s!' % rr['data']))
@@ -47,7 +46,7 @@ class webservices_generic(models.Model):
     def generic_connection(self):
         _logger.warning('Entering function "test connection"')
         base_url = self.url
-        
+
         # token en el ecabezado (por ejemplo toggl)
         if self.auth_method == 'headers_token':
             _logger.warning('Entering headers_token method')
@@ -55,18 +54,18 @@ class webservices_generic(models.Model):
             headers = urllib3.util.make_headers(
                 basic_auth='%s:api_token' % (self.token))
             r = http.request('GET', connection, headers=headers)
-        
+
         # token junto con los datos (por ejemplo sbif)
         elif self.auth_method == 'data_token':
             headers={}
             _logger.info('entra por metodo data_token')
-            
+
             connection = '{}?{}={}&{}={}'.format(
                 self.url, self.auth_method_name, self.token,
                 self.response_format_name, self.response_format)
-            
+
             _logger.info('conection: %s' % connection)
-            
+
         # esquema de datos complejo (no funciona) por ejemplo, Sugarcrm
         elif self.auth_method == 'user_password':
             headers={'Content-Type': 'application/json'}
@@ -75,7 +74,6 @@ class webservices_generic(models.Model):
                 'password': md5.new(self.password).hexdigest(),
                 'version' : '1'
             }}
-            print parameters
             connection = {
                 "method" : "login",
                 "input_type" : "JSON",
@@ -86,7 +84,6 @@ class webservices_generic(models.Model):
             }
 
         # realiza la conexión
-        print 'datos que envia', connection
         r = http.urlopen(self.http_auth_method, connection, headers=headers)
         _logger.info('encabezados de respuesta: %s' % r.headers)
         _logger.info('datos de la respuesta: %s' % r.data)
@@ -105,9 +102,9 @@ class webservices_generic(models.Model):
             rr['data'] = r.data
             _logger.warning('formato NO json, status: %s' % r.status)
         return rr
-        
 
-    
+
+
     name = fields.Char('Name', required=True)
 
     auth_method = fields.Selection(
@@ -152,7 +149,7 @@ class webservices_generic(models.Model):
             ('P','Yes, Public URL'),
         ],
         'Third party library',
-        help="""Defines if connection is made over standard libraries or 
+        help="""Defines if connection is made over standard libraries or
 third parties libraries, as, for example: 'Sugarcrm (own url)' or 'Mandrill'
 (mandrill url included in module)""")
 
@@ -167,19 +164,19 @@ User by user: each user has its own key/token
         required=True)
 
     # request_format_name = fields.Char('Request Format Name')
-    
+
     # request_format = fields.Selection(available_format, 'Request Format',
     #    help='Defines Expected Response Format', required=True, default='JSON')
-    
+
     response_format_name = fields.Char('Response Format Name')
-    
+
     response_format = fields.Selection(available_format, 'Response Format',
         help='Defines Expected Response Format', required=True, default='JSON')
-    
+
     additional_parameter = fields.Char('Additional Parameter Name for Format',
-        help="""Just provide the parameter_name required by the server to 
+        help="""Just provide the parameter_name required by the server to
 specify the desired format (i.e: &parameter_name='JSON')""")
-    
+
     srv_users_ids = fields.One2many(
         'ws.srv.users', 'ws_server_id', string='Webservice Users')
 
