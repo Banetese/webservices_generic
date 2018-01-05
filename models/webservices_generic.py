@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, api, models, _
-import time, md5
+import time
+from hashlib import md5 
 from datetime import datetime, timedelta
 from odoo.exceptions import Warning
 import os, sys, json
