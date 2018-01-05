@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, api, models, _
 import time
-from hashlib import md5 
+from hashlib import md5
 from datetime import datetime, timedelta
 from odoo.exceptions import Warning
 import os, sys, json
@@ -93,7 +93,7 @@ class webservices_generic(models.Model):
         rr['status'] = r.status
         if r.status == 200:
             if self.response_format == 'JSON':
-                rr['data'] = json.loads(r.data)
+                rr['data'] = json.loads(r.data.decode())
                 _logger.info('formato json, status 200')
             else:
                 # para trabajar con otros formatos de respuesta (no implementado)
