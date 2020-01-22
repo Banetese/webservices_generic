@@ -24,6 +24,7 @@ available_format = [
 
 class webservices_generic(models.Model):
     _name = "webservices.server"
+    _description = "Webservices Server"
 
 
     @api.multi
@@ -184,6 +185,7 @@ specify the desired format (i.e: &parameter_name='JSON')""")
 
 class ws_srv_users(models.Model):
     _name = "ws.srv.users"
+    _description = "Ws Srv Users"
 
     name = fields.Char(
         'User Name',
